@@ -1,0 +1,5 @@
+package com.marketservice.controller;
+
+public class MarketController {
+
+}

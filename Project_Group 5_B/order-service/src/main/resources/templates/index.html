@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Orders</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}" /></head>
+<body>
+  <h2>Orders</h2>
+  <table border="1">
+    <thead><tr><th>ID</th><th>Username</th><th>Symbol</th><th>Qty</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr th:each="ord : ${orders}">
+        <td th:text="${ord.id}">ID</td>
+        <td th:text="${ord.username}">Username</td>
+        <td th:text="${ord.symbol}">Symbol</td>
+        <td th:text="${ord.quantity}">Qty</td>
+        <td th:text="${ord.status}">Status</td>
+        <td>
+          <a th:href="@{/edit/{id}(id=${ord.id})}">Update</a> |
+          <a th:href="@{/delete/{id}(id=${ord.id})}">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p><a href="/order">Add a new Order</a></p>
+</body>
+</html>

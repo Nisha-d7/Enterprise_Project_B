@@ -1,0 +1,7 @@
+spring.application.name=order-service
+server.port=8081
+
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+spring.thymeleaf.cache=false
+
+spring.data.mongodb.uri=mongodb+srv://Nisha:mongodb12@ite5315-nisha.9czpg.mongodb.net/enterprise_projectB

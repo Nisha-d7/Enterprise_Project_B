@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Add Order</title></head>
+<body>
+  <h2>Place Stock Order</h2>
+  <form action="#" th:action="@{/add}" th:object="${order}" method="post">
+    <label for="username">Username</label>
+    <input type="text" th:field="*{username}" id="username" placeholder="Username"/>
+    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+    <br/>
+
+    <label for="symbol">Symbol</label>
+    <input type="text" th:field="*{symbol}" id="symbol" placeholder="Symbol (e.g. AAPL)"/>
+    <span th:if="${#fields.hasErrors('symbol')}" th:errors="*{symbol}"></span>
+    <br/>
+
+    <label for="quantity">Quantity</label>
+    <input type="number" th:field="*{quantity}" id="quantity" placeholder="Quantity"/>
+    <span th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+    <br/>
+
+    <input type="submit" value="Place Order"/>
+  </form>
+
+  <p><a href="/">Back to Orders</a></p>
+</body>
+</html>

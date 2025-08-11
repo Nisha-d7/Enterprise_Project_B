@@ -1,0 +1,5 @@
+package com.marketservice.repo;
+
+public class MarketOrderRepository {
+
+}

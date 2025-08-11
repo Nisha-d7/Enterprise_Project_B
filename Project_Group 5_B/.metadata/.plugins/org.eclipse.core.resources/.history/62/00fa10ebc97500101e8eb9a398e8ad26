@@ -1,0 +1,113 @@
+package com.orderservice.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.validation.Valid;
+
+import com.orderservice.model.Order;
+import com.orderservice.repo.OrderRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Controller
+public class OrderController {
+
+    @Autowired
+    private OrderRepository repo;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    // Root mapping to show all orders (Thymeleaf view)
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("orders", repo.findAll());
+        return "index"; // index.html Thymeleaf page
+    }
+
+    // Show form to add a new order
+    @GetMapping("/order")
+    public String orderForm(Order order) {
+        return "add-order"; // add-order.html Thymeleaf page
+    }
+
+    // Handle POST form submission to add new order
+    @PostMapping("/add")
+    public String add(@Valid Order order,
+                      BindingResult result,
+                      RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "add-order";
+        }
+
+        order.setStatus("SENT_TO_MARKET");
+        repo.save(order);
+
+        // Prepare payload
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", order.getUsername());
+        payload.put("symbol", order.getSymbol());
+        payload.put("quantity", order.getQuantity());
+
+        try {
+            var resp = restTemplate.postForEntity("http://market-service/api/market/place", payload, Map.class);
+            if (resp.getStatusCode().is2xxSuccessful()) {
+                order.setStatus("EXECUTED");
+            } else {
+                order.setStatus("FAILED");
+            }
+        } catch (RestClientException ex) {
+            order.setStatus("FAILED - MARKET_ERROR");
+        }
+
+        repo.save(order);
+        redirectAttributes.addFlashAttribute("success", "Order added successfully!");
+        return "redirect:/";
+    }
+
+    // Show form to edit existing order
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") String id, Model model) {
+        Order order = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Order Id: " + id));
+        model.addAttribute("order", order);
+        return "update-order"; // update-order.html Thymeleaf page
+    }
+
+    // Handle POST form submission to update order
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable("id") String id,
+                         @Valid Order order,
+                         BindingResult result,
+                         RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            order.setId(id);
+            return "update-order";
+        }
+
+        repo.save(order);
+        redirectAttributes.addFlashAttribute("success", "Order updated successfully!");
+        return "redirect:/";
+    }
+
+    // Delete an order
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") String id,
+                         RedirectAttributes redirectAttributes) {
+        Order order = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Order Id: " + id));
+        repo.delete(order);
+        redirectAttributes.addFlashAttribute("success", "Order deleted successfully!");
+        return "redirect:/";
+    }
+}

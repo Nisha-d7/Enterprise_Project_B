@@ -1,0 +1,5 @@
+package com.marketservice.config;
+
+public class RestTemplateConfig {
+
+}

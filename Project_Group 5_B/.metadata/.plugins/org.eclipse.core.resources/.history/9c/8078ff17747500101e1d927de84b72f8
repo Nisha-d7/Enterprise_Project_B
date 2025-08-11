@@ -1,0 +1,20 @@
+package com.orderservice.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.ResponseEntity;
+
+import com.orderservice.model.Order;
+import com.orderservice.repo.OrderRepository;
+
+import java.util.Map;
+
+@Controller
+public class OrderController {
+
+}
