@@ -25,4 +25,4 @@ info.app.version=1.0.0
 
 
 
-spring.data.mongodb.uri=
+spring.data.mongodb.uri=mongodb+srv://Nisha:mongodb12@ite5315-nisha.9czpg.mongodb.net/enterprise_projectB
